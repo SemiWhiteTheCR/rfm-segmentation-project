@@ -1,79 +1,100 @@
-# RFM Segmentation Project for E-commerce
+# Сегментация клиентов e-commerce с помощью RFM-анализа
 
-## Project goal
-This project solves a business question: **what customer segments exist in an e-commerce business, and how should the company work with each of them?**
+## Цель проекта
+Цель проекта — ответить на бизнес-вопрос: **какие типы пользователей есть в клиентской базе и как с ними работать**.
 
-The project uses synthetic transactional data and RFM analysis:
-- **Recency** — how long ago the customer made the last purchase.
-- **Frequency** — how many orders the customer placed.
-- **Monetary** — how much money the customer brought.
+В качестве подхода используется **RFM-анализ**, который позволяет сегментировать клиентов на основе их реального покупательского поведения:
+- **Recency** — как давно клиент совершал последнюю покупку
+- **Frequency** — как часто клиент покупает
+- **Monetary** — сколько денег клиент приносит бизнесу
 
-Then customers are grouped into segments such as `VIP`, `Loyal`, `New`, `At Risk`, `Dormant`, and `Other`.
+На основе этих метрик пользователи распределяются по сегментам, например: `VIP`, `Loyal`, `New`, `At Risk`, `Dormant`, `Other`.
 
-## Repository structure
+## Структура проекта
 
-- `data/orders_dataset.csv` — generated raw transactional dataset.
-- `sql/segmentation.sql` — SQL script for data checks and RFM calculation.
-- `notebooks/analysis.ipynb` — notebook for segmentation and analysis.
-- `results/rfm_table.csv` — final user-level RFM table.
-- `results/segment_summary.csv` — final segment summary.
+- `data/orders_dataset.csv` — сгенерированный транзакционный датасет
+- `sql/segmentation.sql` — SQL-скрипт для проверки данных и расчёта базовых RFM-метрик
+- `notebooks/analysis.ipynb` — ноутбук с полной сегментацией и анализом
+- `results/rfm_table.csv` — итоговая таблица RFM по пользователям
+- `results/segment_summary.csv` — агрегированная таблица по сегментам
 
-## Dataset
-Synthetic e-commerce data was generated for **500 users** over about **1 year** up to **2026-06-01**.
+## Данные
+Для проекта были **самостоятельно сгенерированы синтетические данные** интернет-магазина. В датасете содержатся транзакции **500 пользователей** примерно за **1 год** до даты анализа `2026-06-01` [code_file:26][file:1].
 
-Fields:
-- `user_id`
-- `order_id`
-- `order_date`
-- `amount`
+Поля датасета:
+- `user_id` — идентификатор пользователя
+- `order_id` — идентификатор заказа
+- `order_date` — дата заказа
+- `amount` — сумма заказа
 
-## Methodology
+## Этапы анализа
 
-### 1. Data preparation
-Checks:
-- NULL values
-- valid dates
-- numeric positive amounts
-- duplicate orders
+### 1. Подготовка данных
+На этом этапе выполняются проверки:
+- наличие `NULL`
+- корректность дат
+- корректность и положительность сумм
+- наличие дубликатов заказов
 
-### 2. RFM calculation
-For each user:
-- `recency` = days since last purchase up to `2026-06-01`
-- `frequency` = number of unique orders
-- `monetary` = total revenue from the user
+### 2. Расчёт RFM-метрик
+Для каждого пользователя считаются:
+- `recency` — количество дней с момента последней покупки до даты анализа `2026-06-01`
+- `frequency` — количество уникальных заказов
+- `monetary` — суммарная выручка от пользователя [code_file:27][file:1]
 
-### 3. Quantile scoring
-Each metric is split into quartiles:
-- `r_score` from 1 to 4
-- `f_score` from 1 to 4
-- `m_score` from 1 to 4
+### 3. Квантильная сегментация
+Каждая из метрик R, F, M разбивается на квартили:
+- `r_score` — от 1 до 4
+- `f_score` — от 1 до 4
+- `m_score` — от 1 до 4 [code_file:27][file:1]
 
-Then a combined `rfm_score` is built.
+После этого формируется общий `rfm_score`, который используется для выделения сегментов [code_file:27].
 
-### 4. Segment rules
-Used rules:
-- `VIP` — strongest RFM profile
-- `Loyal` — recent and frequent buyers
-- `New` — very recent but still low frequency
-- `At Risk` — previously active, but less recent
-- `Dormant` — old and low-activity users
-- `Other` — users not covered by the main rules
+### 4. Формирование сегментов
+В проекте используются сегменты:
+- `VIP` — самые ценные клиенты с сильным RFM-профилем
+- `Loyal` — недавние и частые покупатели
+- `New` — новые клиенты с низкой частотой, но высокой свежестью
+- `At Risk` — ранее активные клиенты, которые давно не покупали
+- `Dormant` — малоактивные пользователи с высокой давностью
+- `Other` — остальные пользователи [code_file:27][file:1]
 
-### 5. Churn risk
-`churn_risk = 1`, if the customer has not purchased for more than **90 days**.
+### 5. Оценка риска оттока
+Введён флаг `churn_risk`:
+- `1`, если клиент не совершал покупок более **90 дней**
+- `0`, если клиент покупал в последние 90 дней [code_file:27][file:1]
 
-## Main business metrics
-For each segment the project calculates:
-- number of users
-- total revenue
-- revenue share
-- churn risk share
+## Метрики по сегментам
+Для каждого сегмента рассчитываются:
+- количество пользователей
+- суммарная выручка
+- доля выручки
+- доля пользователей с риском оттока [code_file:28][file:1]
 
-## Example interview pitch
-> I built a customer segmentation project for e-commerce using RFM analysis. I generated synthetic transaction data, calculated recency, frequency and monetary metrics, created customer segments, analyzed each segment’s contribution to revenue, and identified users with high churn risk. Based on that, I proposed retention and reactivation strategies.
+## Результат проекта
+В результате проекта:
+- построена RFM-сегментация клиентской базы
+- выделены группы клиентов с разной ценностью для бизнеса
+- рассчитан вклад сегментов в выручку
+- определены пользователи с высоким риском оттока [code_file:27][code_file:28]
 
-## How to use
-1. Open `data/orders_dataset.csv`.
-2. Run `sql/segmentation.sql` in PostgreSQL or adapt it to another DBMS.
-3. Open `notebooks/analysis.ipynb` and run all cells.
-4. Review `results/rfm_table.csv` and `results/segment_summary.csv`.
+## Бизнес-ценность
+Такой анализ помогает:
+- удерживать VIP- и Loyal-клиентов
+- запускать реактивационные кампании для At Risk и Dormant
+- развивать onboarding и повторные покупки для New-клиентов [code_file:27][code_file:28]
+
+## Используемые инструменты
+- SQL — для проверки данных и расчёта RFM
+- Python / pandas — для сегментации и анализа
+- Jupyter Notebook — для оформления аналитики
+- CSV — для хранения исходных и итоговых таблиц [file:1]
+
+## Как запустить
+1. Открыть `data/orders_dataset.csv`
+2. Выполнить SQL-скрипт `sql/segmentation.sql`
+3. Открыть `notebooks/analysis.ipynb` и запустить все ячейки
+4. Изучить итоговые таблицы `results/rfm_table.csv` и `results/segment_summary.csv` [file:1]
+
+## Кратко для собеседования
+В этом проекте я реализовал RFM-сегментацию пользователей интернет-магазина на синтетических транзакционных данных. Я рассчитал показатели давности, частоты и денежного вклада, выделил клиентские сегменты, оценил вклад каждого сегмента в выручку и определил пользователей с высоким риском оттока. На основе результатов можно принимать решения по удержанию и реактивации клиентов.
