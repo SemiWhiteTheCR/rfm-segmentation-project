@@ -1,8 +1,8 @@
-segment,users_count,users_share_pct,revenue,revenue_share_pct,avg_revenue_per_user,avg_orders_per_user,churn_risk_users
-VIP,1,10.00,28370.51,29.06,28370.51,6.00,0
-Loyal,1,10.00,17438.40,17.86,17438.40,7.00,0
-Promising,2,20.00,13158.04,13.48,6579.02,2.00,0
-At Risk,3,30.00,19768.27,20.25,6589.42,3.67,0
-Low Activity,1,10.00,6182.13,6.34,6182.13,3.00,0
-Regular,1,10.00,5029.32,5.15,5029.32,3.00,0
-Lost,1,10.00,2445.33,2.50,2445.33,2.00,1
+"segment","users_count","users_share_pct","revenue","revenue_share_pct","avg_revenue_per_user","avg_orders_per_user","churn_risk_users"
+VIP,16,16.00,341014.63,34.56,21313.41,5.94,0
+At Risk,17,17.00,203655.57,20.64,11979.74,4.71,3
+Loyal,11,11.00,125454.17,12.71,11404.92,5.00,0
+Regular,19,19.00,118102.63,11.97,6215.93,2.53,1
+Low Activity,16,16.00,104847.22,10.62,6552.95,3.06,0
+Promising,12,12.00,77153.38,7.82,6429.45,2.17,0
+Lost,9,9.00,16606.77,1.68,1845.20,1.56,8
