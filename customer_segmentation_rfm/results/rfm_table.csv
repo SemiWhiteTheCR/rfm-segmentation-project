@@ -1,0 +1,11 @@
+user_id,recency,frequency,monetary,r_score,f_score,m_score,segment,churn_risk
+1,1,6,28370.51,5,5,5,VIP,0
+4,16,7,17438.40,3,5,5,Loyal,0
+8,10,2,8163.37,4,1,4,Promising,0
+9,41,3,7716.27,1,3,4,At Risk,0
+2,17,3,6182.13,3,2,3,Low Activity,0
+7,18,4,6076.12,2,4,3,At Risk,0
+10,38,4,5975.88,2,4,3,At Risk,0
+3,4,3,5029.32,5,3,2,Regular,0
+6,13,2,4994.67,4,2,1,Promising,0
+5,305,2,2445.33,1,1,1,Lost,1
